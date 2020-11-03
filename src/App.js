@@ -1,7 +1,9 @@
 import React from 'react';
 import './App.css';
 
-const logo = 'http://twitchy.com/wp-content/uploads/2015/11/donald-trump-funny-face-190x190.jpg'
+
+
+const logo = require("./trump.gif")
 
 const RANDOMURL = 'https://api.tronalddump.io/random/quote'
 // const SEARCHURL = 'https://api.tronalddump.io/search/quote'
@@ -112,7 +114,7 @@ class App extends React.Component {
   
   onModeClick = (event) => {
     console.log('id: ', event.target.id)
-    this.setState({ isListMode: event.target.id === 'listbutton' ? true : false })
+    this.setState({ isListMode: event.target.id === 'listmode' ? true : false })
   } 
 
   componentDidUpdate(prevProps, prevState) {
@@ -126,11 +128,11 @@ class App extends React.Component {
         <header className="App-header">
           <img src={logo} className={`App-logo${this.state.loading ? " App-logo-spinning" : ""}`} alt="logo" />
           <p>
-            <button id="randombutton" onClick={this.onModeClick} disabled={!this.state.isListMode}>
-              <h2>RANDOM MODE</h2>
+            <button id="randombutton" type ="button" onClick={this.onModeClick} disabled={!this.state.isListMode}>
+              <p>RANDOM MODE </p> 
             </button>
-            <button id="listbutton" onClick={this.onModeClick} disabled={this.state.isListMode}>
-              <h2>LIST MODE</h2>
+            <button name="listmode" id="listbutton" type ="button" onClick={this.onModeClick} disabled={this.state.isListMode}>
+              <p id="listmode">LIST MODE </p>
             </button>
           </p>
           {this.state.isListMode ? (<TagList
