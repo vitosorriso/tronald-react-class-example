@@ -114,7 +114,7 @@ class App extends React.Component {
   
   onModeClick = (event) => {
     console.log('id: ', event.target.id)
-    this.setState({ isListMode: event.target.id === 'listmode' ? true : false })
+    this.setState({ isListMode: event.currentTarget.id === 'listbutton' ? true : false })
   } 
 
   componentDidUpdate(prevProps, prevState) {
@@ -128,11 +128,11 @@ class App extends React.Component {
         <header className="App-header">
           <img src={logo} className={`App-logo${this.state.loading ? " App-logo-spinning" : ""}`} alt="logo" />
           <p>
-            <button id="randombutton" type ="button" onClick={this.onModeClick} disabled={!this.state.isListMode}>
-              <p>RANDOM MODE </p> 
+            <button class="button" id="randombutton" type ="button" onClick={this.onModeClick} disabled={!this.state.isListMode}>
+              <h3> RANDOM MODE </h3> 
             </button>
-            <button name="listmode" id="listbutton" type ="button" onClick={this.onModeClick} disabled={this.state.isListMode}>
-              <p id="listmode">LIST MODE </p>
+            <button class="button" id="listbutton" type ="button" onClick={this.onModeClick} disabled={this.state.isListMode}>
+              <h3> LIST MODE </h3>
             </button>
           </p>
           {this.state.isListMode ? (<TagList
