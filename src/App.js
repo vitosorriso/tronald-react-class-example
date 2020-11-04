@@ -1,6 +1,24 @@
 import React from 'react';
 import './App.css';
 
+// TODO:
+// FACILE
+// 1) dividere i componenti in file diversi
+// 2) this.state.currentQuote
+//    creare un componente che visualizzi, oltre che la citazione stessa, anche:
+//    - lista di tag associati alla citazione (array "tags")
+//    - data della citazione (appeared_at)
+//    - link alla fonte della citazione (investigare nella chiave "_embedded",
+//      prendete sempre il primo elemento dell'array "source")
+// 3) gestione carina ed appropriata degli errori (this.state.error)
+// 4) modalità lista, visualizzare le citazioni associate al tag selezionato
+//    (utilizzando il componente creato nel punto 2)
+//    (fatelo comportare in maniera diversa a seconda della modalità random/list)
+// 5) tornando alla modalità random, deselezionare il tag selezionato
+// medio/difficile
+// 6) arricchire il componente creato nel punto 2 con un meccanismo di salvataggio (solo in modalità random) - CONTROLLARE CHE LA CITAZIONE NON SIA STATA GIA' SALVATA (quote_id)
+// 7) arricchire il componente creato nel punto 2 con un meccanismo di cancellazione (solo in modalità lista)
+//    (utilizzate il campo "quote_id" all'interno della citazione)
 
 
 const logo = require("./trump.gif")
@@ -9,7 +27,8 @@ const RANDOMURL = 'https://api.tronalddump.io/random/quote'
 // const SEARCHURL = 'https://api.tronalddump.io/search/quote'
 // const ALLTAGSURL = 'https://api.tronalddump.io/tag'
 
-const TagList = (props) => (
+const TagList = (props) => {
+  return (
   <p>
     {props.storedTags.map((tag, index) => 
       <span key={`tag-${index}`}>
@@ -25,7 +44,7 @@ const TagList = (props) => (
       </span>
     )}
   </p>
-)
+)}
 
 class App extends React.Component {
   constructor(props) {
@@ -46,6 +65,7 @@ class App extends React.Component {
     }
   }
 
+  // dividere in fetchRandomTrump() e saveRandomTrump()
   fetchAndSaveRandomTrump = async () => {
     let quote = {}
     let error = false
@@ -72,7 +92,7 @@ class App extends React.Component {
       if (storedQuotes.length > 0) {
         // check if quote already exists
         const indexQuote = storedQuotes.findIndex(storedQuote => quote.quote_id === storedQuote.quote_id)
-        if (indexQuote > -1 ) { // this means that quote exist!
+        if (indexQuote > -1 ) { // this means that quote already exists!
           isNewQuote = false
         }
       }
@@ -104,7 +124,8 @@ class App extends React.Component {
           currentQuote: error ? {} : quote,
           loading: false,
           storedQuotes: [...quotesToSave],
-          storedTags: [...storedTags]
+          storedTags: [...storedTags],
+          error
         }
       })
     }
@@ -112,8 +133,8 @@ class App extends React.Component {
 
   onTagClick = (event) => this.setState({ selectedTag: event.target.name })
   
-  onModeClick = (event) => {
-    console.log('id: ', event.target.id)
+  onModeClick = (mode) => (event) => {
+    // console.log('MODE? ', mode)
     this.setState({ isListMode: event.currentTarget.id === 'listbutton' ? true : false })
   } 
 
@@ -128,10 +149,10 @@ class App extends React.Component {
         <header className="App-header">
           <img src={logo} className={`App-logo${this.state.loading ? " App-logo-spinning" : ""}`} alt="logo" />
           <p>
-            <button class="button" id="randombutton" type ="button" onClick={this.onModeClick} disabled={!this.state.isListMode}>
+            <button class="button" id="randombutton" type="button" onClick={this.onModeClick('random')} disabled={!this.state.isListMode}>
               <h3> RANDOM MODE </h3> 
             </button>
-            <button class="button" id="listbutton" type ="button" onClick={this.onModeClick} disabled={this.state.isListMode}>
+            <button class="button" id="listbutton" type="button" onClick={this.onModeClick('list')} disabled={this.state.isListMode}>
               <h3> LIST MODE </h3>
             </button>
           </p>
@@ -139,13 +160,16 @@ class App extends React.Component {
             storedTags={this.state.storedTags}
             onTagClick={this.onTagClick}
             selectedTag={this.state.selectedTag}
-          />) : 
-          (<><p>
-            <button onClick={this.fetchAndSaveRandomTrump} disabled={this.state.loading}>
-              <h2>{this.state.loading ? 'loading...' : 'RANDOM TRUMP QUOTE'}</h2>
-            </button>
-          </p>
-          <p>{this.state.currentQuote.value}</p></>)}
+          />) : (<>
+            <p>
+              <button onClick={this.fetchAndSaveRandomTrump} disabled={this.state.loading}>
+                <h2>
+                  {this.state.loading ? 'loading...' : 'RANDOM TRUMP QUOTE'}
+                </h2>
+              </button>
+            </p>
+            <p>{this.state.currentQuote.value}</p>
+          </>)}
           <p>Citazioni salvate: {this.state.storedQuotes.length}</p>
           <p>Tag salvati: {this.state.storedTags.length}</p>
         </header>
@@ -160,3 +184,7 @@ export default App;
 // mutable / immutable useful links:
 // https://stackoverflow.com/questions/48057906/prevstate-in-componentdidupdate-is-the-currentstate#48058492
 // https://ultimatecourses.com/blog/all-about-immutable-arrays-and-objects-in-javascript#immutable-object-operations
+
+// OTHER USEFUL LINKS:
+// https://www.taniarascia.com/understanding-destructuring-rest-spread/
+// https://stackoverflow.com/questions/32782922/what-do-multiple-arrow-functions-mean-in-javascript
